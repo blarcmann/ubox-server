@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const FFmpeg = require('fluent-ffmpeg')
-const { User } = require("../models/User");
+const { Video } = require("../models/Video");
 const { auth } = require("../middlewares/auth");
 
 //=================================
@@ -61,7 +61,27 @@ router.post("/thumbnail", (req, res) => {
         duration: duration,
       })
     })
-    .takeScreenshots(5, 'uploads/thumbnails', '320*240');
+    .screenshots({
+      count: 4,
+      folder: 'uploads/thumbnails',
+      size: '320x240',
+      filename: 'thumbnail-%b.png' 
+    });
+});
+
+router.post("/uploadvideo", (req, res) => {
+  const video = new Video(req.body);
+  video.save((error, video) => {
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        err
+      })
+    }
+    return res.status(200).json({
+      success: true,
+    })
+  })
 });
 
 module.exports = router;

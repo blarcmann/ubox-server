@@ -47,6 +47,7 @@ router.post("/login", (req, res) => {
 
       user.generateToken((err, user) => {
         if (err) return res.status(400).send(err);
+        console.log(user)
         res.cookie("w_authExp", user.tokenExp);
         res
           .cookie("w_auth", user.token)
@@ -54,6 +55,7 @@ router.post("/login", (req, res) => {
           .json({
             success: true,
             name: user.name,
+            userId: user._id,
             token: user.token,
             email: user.email
           });
