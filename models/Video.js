@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-const moment = require("moment");
+const Schema = mongoose.Schema;
 
 const videoSchema = mongoose.Schema({
   writer: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
   },
   title: {

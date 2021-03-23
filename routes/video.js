@@ -36,6 +36,20 @@ router.post("/uploadfile", (req, res) => {
   })
 });
 
+router.get("/all", (req, res) => {
+  Video.find()
+    .populate('writer')
+    .exec((error, videos) => {
+      if (error) {
+        return res.status(400).send({ success: false, error })
+      }
+      res.status(200).json({
+        success: true,
+        videos,
+      })
+    })
+});
+
 
 router.post("/thumbnail", (req, res) => {
 
@@ -65,7 +79,7 @@ router.post("/thumbnail", (req, res) => {
       count: 4,
       folder: 'uploads/thumbnails',
       size: '320x240',
-      filename: 'thumbnail-%b.png' 
+      filename: 'thumbnail-%b.png'
     });
 });
 
@@ -82,6 +96,21 @@ router.post("/uploadvideo", (req, res) => {
       success: true,
     })
   })
+});
+
+
+router.post("/getvideo", (req, res) => {
+  Video.findOne({ _id: req.body.videoId })
+    .populate('writer')
+    .exec((error, video) => {
+      if (error) {
+        return res.status(400).send(error)
+      }
+      res.status(200).json({
+        success: true,
+        video
+      })
+    })
 });
 
 module.exports = router;
