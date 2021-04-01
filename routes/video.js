@@ -50,7 +50,6 @@ router.get("/all", (req, res) => {
     })
 });
 
-
 router.post("/thumbnail", (req, res) => {
 
   let thumbnailsPath = '';
@@ -76,9 +75,8 @@ router.post("/thumbnail", (req, res) => {
       })
     })
     .screenshots({
-      count: 4,
+      count: 1,
       folder: 'uploads/thumbnails',
-      size: '320x240',
       filename: 'thumbnail-%b.png'
     });
 });
@@ -112,7 +110,6 @@ router.post("/getvideo", (req, res) => {
     })
 });
 
-
 router.post("/getSubVideos", (req, res) => {
   Subscriber.find({ 'userFrom': req.body.userFrom })
     .exec((error, subscribers) => {
@@ -131,7 +128,7 @@ router.post("/getSubVideos", (req, res) => {
             return res.status(400).send(error)
           }
           return res.status(200).json({
-            success: true, 
+            success: true,
             videos
           })
         })
@@ -140,6 +137,27 @@ router.post("/getSubVideos", (req, res) => {
 
     })
 });
+
+router.post("/viewCount", (req, res) => {
+  Video.findOne({ _id: req.body.videoId })
+    .exec((error, video) => {
+      if (error) {
+        return res.status(400).send(error)
+      }
+      video.views += 1;
+      video.save()
+      // if (!video.views) {
+      //   video.views = 1;
+      // } else {
+      // }
+      res.status(200).json({
+        success: true
+      })
+    })
+
+})
+
+
 
 
 module.exports = router;
