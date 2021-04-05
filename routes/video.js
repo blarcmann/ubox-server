@@ -83,7 +83,7 @@ router.post("/thumbnail", (req, res) => {
 
 router.post("/uploadvideo", (req, res) => {
   const video = new Video(req.body);
-  video.save((error, video) => {
+  video.save((error) => {
     if (error) {
       return res.status(400).json({
         success: false,
@@ -133,8 +133,6 @@ router.post("/getSubVideos", (req, res) => {
           })
         })
 
-
-
     })
 });
 
@@ -146,13 +144,56 @@ router.post("/viewCount", (req, res) => {
       }
       video.views += 1;
       video.save()
-      // if (!video.views) {
-      //   video.views = 1;
-      // } else {
-      // }
       res.status(200).json({
         success: true
       })
+    })
+
+})
+
+router.post("/like", (req, res) => {
+  const { userId, videoId } = req.body;
+  Video.findOne({ _id: videoId })
+    .exec((error, video) => {
+      if (error) {
+        return res.status(400).send(error)
+      }
+      if (video && video.likes && video.likes.length > 0) {
+        for (let i = 0; i < video.likes.length; i++) {
+          if (video.likes[i].toString() === userId.toString()) {
+            video.likes.splice(i, 1);
+          }
+        }
+        video.save()
+        return res.status(200).json({ success: true })
+      } else {
+        video.likes.push(userId);
+        video.save();
+        return res.status(200).json({ success: true })
+      }
+    })
+})
+
+router.post("/dislike", (req, res) => {
+  const { userId, videoId } = req.body;
+  Video.findOne({ _id: videoId })
+    .exec((error, video) => {
+      if (error) {
+        return res.status(400).send(error)
+      }
+      if (video && video.dislikes && video.dislikes.length > 0) {
+        for (let i = 0; i < video.dislikes.length; i++) {
+          if (video.dislikes[i].toString() === userId.toString()) {
+            video.dislikes.splice(i, 1);
+          }
+        }
+        video.save()
+        return res.status(200).json({ success: true })
+      } else {
+        video.dislikes.push(userId);
+        video.save();
+        return res.status(200).json({ success: true })
+      }
     })
 
 })

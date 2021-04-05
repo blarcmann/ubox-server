@@ -23,15 +23,23 @@ const videoSchema = mongoose.Schema({
   },
   views: {
     type: Number,
-    default: 0,
+    default: 1,
   },
+  likes: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  dislikes: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   duration: {
     type: String,
   },
   thumbnail: {
     type: String,
   }
-}, {timestamps: true})
+}, { timestamps: true })
 
 // yemi - ADMINpassword
 
